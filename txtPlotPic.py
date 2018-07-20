@@ -37,39 +37,54 @@ def get_txt(pic_file):
 
     txt = convert(img)
     #print(txt)
-    f = open(save_file,"w")
-    f.write(txt)            #存储到文件中
-    f.close()
+
     return txt
 def open_file():
     path = filedialog.askopenfilename(title='打开图片文件', filetypes=[('jpg', '*.jpg'),('png','*.png'), ('All Files', '*')])
     txt = get_txt(path)
+    txtString.set(txt)
     text.delete(1.0,tk.END)
     text.insert(1.0, txt)  # INSERT表示在光标位置插入
     text.see(tk.END)
     text.update()
 def save_file():
-    saveFlag.set(True)
-    print('save')
+    path = filedialog.askdirectory(title='选择保存路径')
+    
+    f = open(path+'/1.txt',"w")
+    f.write(txtString.get())            #存储到文件中
+    f.close()
+def copy(event=None):
+    #text.event_generate("<<Copy>>")    
+    root.clipboard_append(txtString.get())
 
 if __name__ == '__main__':
-
     root = tk.Tk()
+
     root.geometry('750x700+750+700')
     root.title('图片转文本')
-    root.iconbitmap('icon/icon.ico')
+    #root.iconbitmap('icon/icon.ico')
     txtString = tk.StringVar()
-    saveFlag = tk.BooleanVar(value=False)
 
-    btn1 = tk.Button(root, text='打开图片文件',font =("宋体",10,'bold'),width=30,height=2, command=open_file).grid(row = 0,column = 0)
-    #btn1 = tk.Button(root, text='打开图片文件',font =("宋体",10,'bold'),width=10,height=2, command=open_file)
-    btn2 = tk.Button(root, text='保存',font = ('宋体',10,'bold'),width=30,height=2,command = save_file).grid(row = 0, column = 1)
 
-    #设置entry为只读属性
-    #tk.Entry(root, width=30,textvariable=output).grid(row = 1, columnspan = 3)
+    btn1 = tk.Button(root, text='打开图片文件',font =("宋体",10,'bold'),width=30,height=2, command=open_file)
+    btn2 = tk.Button(root, text='复制',font = ('宋体',10,'bold'),width=15,height=2,command = copy)
+    btn3 = tk.Button(root, text='保存',font = ('宋体',10,'bold'),width=15,height=2,command = save_file)
+    btn4 = tk.Button(root, text='退出',font = ("宋体",10,'bold'),width=30,height=2, command=root.quit)
+
+    btn1.grid(row = 0, column = 0)
+    btn2.grid(row = 0, column = 1)
+    btn3.grid(row = 0, column = 2)
+    btn4.grid(row = 0, column = 3)
+
     text=tk.Text(root,width=100,height=50)
-    text.grid(row=1,columnspan=3)
+    text.grid(row=1,columnspan=4)
+    #menubar=tk.Menu(root)
+    #filemenu=tk.Menu(menubar)
+    #root.config(menu=menubar)
 
-    tk.Button(root,text='退出',font =("宋体",10,'bold'),width=30, height = 2, command=root.quit).grid(row = 0, column=2)
+    #filemenu.add_command(label="复制",command=copy)
+    #menubar.add_cascade(label="文件",menu=filemenu)
+
 
     root.mainloop()
+
